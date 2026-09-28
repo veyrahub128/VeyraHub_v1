@@ -1,0 +1,462 @@
+-- Veyra Hub - GUI FIXED
+
+if _G.VeyraHub_AntiDoubleExec_9f3k2m7x then
+    return
+end
+_G.VeyraHub_AntiDoubleExec_9f3k2m7x = true
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+
+local Admins = {
+
+    ["iSekai_iSekai"] = true,
+
+    ["EGOTISMS"] = true,
+
+    ["Uzoth"] = true,
+
+    ["Uzi_London"] = true,
+
+    ["Abso_Delecte"] = true,
+
+    ["Felku"] = true,
+
+    ["ShafiDev"] = true,
+
+    ["mrheffner_gg"] = true,
+
+    ["undercover_admin23"] = true,
+
+    ["Arkesium"] = true,
+
+    ["vidsmurf"] = true,
+
+    ["xonae"] = true,
+
+    ["RosesAreBlueish"] = true,
+
+    ["dethsmurf"] = true,
+
+    ["Suizei"] = true,
+
+    ["Wrathsong"] = true,
+
+    ["Quasiduck"] = true,
+
+    ["data_bot4"] = true,
+
+    ["ZeroZero_Two"] = true,
+
+    ["CJ_Oyer"] = true,
+
+    ["Azarth"] = true,
+
+    ["rip_indra"] = true,
+
+    ["mygame43"] = true
+
+    ["poticoler"] = true
+
+}
+
+local HubEnabled = false
+local HubVisible = true
+local AdminConnection = nil
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "VeyraHub"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.DisplayOrder = 999
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+-- MAIN FRAME
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 240, 0, 135)
+MainFrame.Position = UDim2.new(0.5, -120, 0, 70)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+MainFrame.BackgroundTransparency = 0.05
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.ZIndex = 10
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 10)
+MainCorner.Parent = MainFrame
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(147, 0, 255)
+MainStroke.Thickness = 1.5
+MainStroke.Transparency = 0.25
+MainStroke.Parent = MainFrame
+
+-- TITLE BAR
+local TitleBar = Instance.new("Frame")
+TitleBar.Name = "TitleBar"
+TitleBar.Size = UDim2.new(1, 0, 0, 32)
+TitleBar.BackgroundColor3 = Color3.fromRGB(22, 22, 37)
+TitleBar.BorderSizePixel = 0
+TitleBar.Active = true
+TitleBar.ZIndex = 11
+TitleBar.Parent = MainFrame
+
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 10)
+TitleCorner.Parent = TitleBar
+
+-- TITLE
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Size = UDim2.new(1, 0, 1, 0)
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Veyra Hub"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 17
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Center
+Title.TextYAlignment = Enum.TextYAlignment.Center
+Title.ZIndex = 12
+Title.Parent = TitleBar
+
+-- X BUTTON
+local HideButton = Instance.new("TextButton")
+HideButton.Name = "HideButton"
+HideButton.Size = UDim2.new(0, 32, 0, 30)
+HideButton.Position = UDim2.new(1, -34, 0, 1)
+HideButton.BackgroundTransparency = 1
+HideButton.BorderSizePixel = 0
+HideButton.Text = "×"
+HideButton.TextColor3 = Color3.fromRGB(230, 230, 230)
+HideButton.TextSize = 22
+HideButton.Font = Enum.Font.GothamBold
+HideButton.ZIndex = 20
+HideButton.Active = true
+HideButton.AutoButtonColor = true
+HideButton.Parent = TitleBar
+
+-- ON / OFF
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Size = UDim2.new(0, 110, 0, 40)
+ToggleButton.Position = UDim2.new(0.5, -55, 0, 45)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+ToggleButton.BorderSizePixel = 0
+ToggleButton.Text = "OFF"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 80, 80)
+ToggleButton.TextSize = 16
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.ZIndex = 15
+ToggleButton.Active = true
+ToggleButton.AutoButtonColor = true
+ToggleButton.Parent = MainFrame
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(0, 8)
+ToggleCorner.Parent = ToggleButton
+
+-- STATUS
+local StatusText = Instance.new("TextLabel")
+StatusText.Name = "StatusText"
+StatusText.Size = UDim2.new(1, 0, 0, 25)
+StatusText.Position = UDim2.new(0, 0, 0, 94)
+StatusText.BackgroundTransparency = 1
+StatusText.Text = "Disabled"
+StatusText.TextColor3 = Color3.fromRGB(180, 180, 180)
+StatusText.TextSize = 12
+StatusText.Font = Enum.Font.GothamMedium
+StatusText.ZIndex = 15
+StatusText.Parent = MainFrame
+
+-- V BUTTON
+-- Position initiale : haut à gauche
+local ShowButton = Instance.new("TextButton")
+ShowButton.Name = "ShowButton"
+ShowButton.Size = UDim2.new(0, 42, 0, 42)
+ShowButton.Position = UDim2.new(0, 20, 0, 40)
+ShowButton.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+ShowButton.BackgroundTransparency = 0.05
+ShowButton.BorderSizePixel = 0
+ShowButton.Text = "V"
+ShowButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ShowButton.TextSize = 17
+ShowButton.Font = Enum.Font.GothamBold
+
+-- Caché au lancement puisque le Hub est ouvert
+ShowButton.Visible = false
+
+ShowButton.Active = true
+ShowButton.AutoButtonColor = true
+ShowButton.ZIndex = 50
+ShowButton.Parent = ScreenGui
+
+local ShowCorner = Instance.new("UICorner")
+ShowCorner.CornerRadius = UDim.new(1, 0)
+ShowCorner.Parent = ShowButton
+
+local ShowStroke = Instance.new("UIStroke")
+ShowStroke.Color = Color3.fromRGB(147, 0, 255)
+ShowStroke.Thickness = 1.5
+ShowStroke.Parent = ShowButton
+
+--------------------------------------------------
+-- DRAG DU HUB
+--------------------------------------------------
+
+local hubDragging = false
+local hubDragStart
+local hubStartPosition
+
+TitleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        hubDragging = true
+        hubDragStart = input.Position
+        hubStartPosition = MainFrame.Position
+    end
+end)
+
+TitleBar.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        hubDragging = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if not hubDragging then
+        return
+    end
+
+    if input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        local delta = input.Position - hubDragStart
+
+        MainFrame.Position = UDim2.new(
+            hubStartPosition.X.Scale,
+            hubStartPosition.X.Offset + delta.X,
+            hubStartPosition.Y.Scale,
+            hubStartPosition.Y.Offset + delta.Y
+        )
+    end
+end)
+
+--------------------------------------------------
+-- DRAG DU V
+--------------------------------------------------
+
+local vDragging = false
+local vDragStart
+local vStartPosition
+local vMoved = false
+
+ShowButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        vDragging = true
+        vMoved = false
+        vDragStart = input.Position
+        vStartPosition = ShowButton.Position
+    end
+end)
+
+ShowButton.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        vDragging = false
+
+        -- Si le V n'a pas été déplacé, on ouvre le Hub
+        if not vMoved then
+            HubVisible = true
+            MainFrame.Visible = true
+            ShowButton.Visible = false
+        end
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if not vDragging then
+        return
+    end
+
+    if input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        local delta = input.Position - vDragStart
+
+        if math.abs(delta.X) > 5 or math.abs(delta.Y) > 5 then
+            vMoved = true
+        end
+
+        ShowButton.Position = UDim2.new(
+            vStartPosition.X.Scale,
+            vStartPosition.X.Offset + delta.X,
+            vStartPosition.Y.Scale,
+            vStartPosition.Y.Offset + delta.Y
+        )
+    end
+end)
+
+--------------------------------------------------
+-- SHOW / HIDE
+--------------------------------------------------
+
+local function HideHub()
+    HubVisible = false
+    MainFrame.Visible = false
+
+    -- Le V garde exactement sa dernière position
+    ShowButton.Visible = true
+end
+
+local function ShowHub()
+    HubVisible = true
+    MainFrame.Visible = true
+    ShowButton.Visible = false
+end
+
+HideButton.MouseButton1Click:Connect(function()
+    HideHub()
+end)
+
+--------------------------------------------------
+-- ADMIN CHECK
+--------------------------------------------------
+
+local function CheckAdmins()
+    for _, player in ipairs(Players:GetPlayers()) do
+        if Admins[player.Name] then
+            LocalPlayer:Kick("Admin detected! Disconnecting...")
+            return
+        end
+    end
+end
+
+--------------------------------------------------
+-- TOGGLE
+--------------------------------------------------
+
+local function ToggleHub()
+    HubEnabled = not HubEnabled
+
+    if HubEnabled then
+
+        ToggleButton.Text = "ON"
+        ToggleButton.TextColor3 = Color3.fromRGB(80, 255, 80)
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(25, 50, 35)
+
+        StatusText.Text = "Enabled"
+        StatusText.TextColor3 = Color3.fromRGB(100, 255, 130)
+
+        CheckAdmins()
+
+        if AdminConnection then
+            AdminConnection:Disconnect()
+        end
+
+        AdminConnection = RunService.Heartbeat:Connect(function()
+            if HubEnabled then
+                CheckAdmins()
+            end
+        end)
+
+    else
+
+        ToggleButton.Text = "OFF"
+        ToggleButton.TextColor3 = Color3.fromRGB(255, 80, 80)
+        ToggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+
+        StatusText.Text = "Disabled"
+        StatusText.TextColor3 = Color3.fromRGB(180, 180, 180)
+
+        if AdminConnection then
+            AdminConnection:Disconnect()
+            AdminConnection = nil
+        end
+    end
+end
+
+ToggleButton.MouseButton1Click:Connect(function()
+    ToggleHub()
+end)
+
+--------------------------------------------------
+-- TOUCHE H
+--------------------------------------------------
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+
+    if gameProcessed then
+        return
+    end
+
+    if input.KeyCode == Enum.KeyCode.H then
+
+        if HubVisible then
+            HideHub()
+        else
+            ShowHub()
+        end
+
+    end
+end)
+
+--------------------------------------------------
+-- NOTIFICATION
+--------------------------------------------------
+
+local Notification = Instance.new("TextLabel")
+Notification.Size = UDim2.new(0, 180, 0, 32)
+Notification.Position = UDim2.new(0.5, -90, 0.08, 0)
+Notification.BackgroundColor3 = Color3.fromRGB(20, 20, 35)
+Notification.BackgroundTransparency = 0.15
+Notification.BorderSizePixel = 0
+Notification.Text = "Veyra Hub Loaded"
+Notification.TextColor3 = Color3.fromRGB(255, 255, 255)
+Notification.TextSize = 12
+Notification.Font = Enum.Font.GothamBold
+Notification.ZIndex = 100
+Notification.Parent = ScreenGui
+
+local NotificationCorner = Instance.new("UICorner")
+NotificationCorner.CornerRadius = UDim.new(0, 7)
+NotificationCorner.Parent = Notification
+
+task.delay(2.5, function()
+
+    if Notification and Notification.Parent then
+
+        local tween = TweenService:Create(
+            Notification,
+            TweenInfo.new(
+                0.6,
+                Enum.EasingStyle.Quad,
+                Enum.EasingDirection.Out
+            ),
+            {
+                BackgroundTransparency = 1,
+                TextTransparency = 1
+            }
+        )
+
+        tween:Play()
+
+        tween.Completed:Connect(function()
+            if Notification then
+                Notification:Destroy()
+            end
+        end)
+
+    end
+end)
