@@ -1,4 +1,4 @@
--- Veyra Hub - GUI FIXED
+--// Veyra Hub - ADMIN DETECTOR FIXED
 
 if _G.VeyraHub_AntiDoubleExec_9f3k2m7x then
     return
@@ -6,64 +6,51 @@ end
 _G.VeyraHub_AntiDoubleExec_9f3k2m7x = true
 
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
+
 local LocalPlayer = Players.LocalPlayer
 
+--------------------------------------------------
+-- ADMINS
+--------------------------------------------------
+
 local Admins = {
-
     ["iSekai_iSekai"] = true,
-
     ["EGOTISMS"] = true,
-
     ["Uzoth"] = true,
-
     ["Uzi_London"] = true,
-
     ["Abso_Delecte"] = true,
-
     ["Felku"] = true,
-
     ["ShafiDev"] = true,
-
     ["mrheffner_gg"] = true,
-
     ["undercover_admin23"] = true,
-
     ["Arkesium"] = true,
-
     ["vidsmurf"] = true,
-
     ["xonae"] = true,
-
     ["RosesAreBlueish"] = true,
-
     ["dethsmurf"] = true,
-
     ["Suizei"] = true,
-
     ["Wrathsong"] = true,
-
     ["Quasiduck"] = true,
-
     ["data_bot4"] = true,
-
     ["ZeroZero_Two"] = true,
-
     ["CJ_Oyer"] = true,
-
     ["Azarth"] = true,
-
     ["rip_indra"] = true,
-
     ["mygame43"] = true
-
 }
+
+--------------------------------------------------
+-- VARIABLES
+--------------------------------------------------
 
 local HubEnabled = false
 local HubVisible = true
-local AdminConnection = nil
+
+--------------------------------------------------
+-- GUI
+--------------------------------------------------
 
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "VeyraHub"
@@ -72,7 +59,10 @@ ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.DisplayOrder = 999
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
+--------------------------------------------------
 -- MAIN FRAME
+--------------------------------------------------
+
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Size = UDim2.new(0, 240, 0, 135)
@@ -94,7 +84,10 @@ MainStroke.Thickness = 1.5
 MainStroke.Transparency = 0.25
 MainStroke.Parent = MainFrame
 
+--------------------------------------------------
 -- TITLE BAR
+--------------------------------------------------
+
 local TitleBar = Instance.new("Frame")
 TitleBar.Name = "TitleBar"
 TitleBar.Size = UDim2.new(1, 0, 0, 32)
@@ -108,11 +101,13 @@ local TitleCorner = Instance.new("UICorner")
 TitleCorner.CornerRadius = UDim.new(0, 10)
 TitleCorner.Parent = TitleBar
 
+--------------------------------------------------
 -- TITLE
+--------------------------------------------------
+
 local Title = Instance.new("TextLabel")
 Title.Name = "Title"
 Title.Size = UDim2.new(1, 0, 1, 0)
-Title.Position = UDim2.new(0, 0, 0, 0)
 Title.BackgroundTransparency = 1
 Title.Text = "Veyra Hub"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -123,7 +118,10 @@ Title.TextYAlignment = Enum.TextYAlignment.Center
 Title.ZIndex = 12
 Title.Parent = TitleBar
 
+--------------------------------------------------
 -- X BUTTON
+--------------------------------------------------
+
 local HideButton = Instance.new("TextButton")
 HideButton.Name = "HideButton"
 HideButton.Size = UDim2.new(0, 32, 0, 30)
@@ -139,7 +137,10 @@ HideButton.Active = true
 HideButton.AutoButtonColor = true
 HideButton.Parent = TitleBar
 
+--------------------------------------------------
 -- ON / OFF
+--------------------------------------------------
+
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Name = "ToggleButton"
 ToggleButton.Size = UDim2.new(0, 110, 0, 40)
@@ -159,7 +160,10 @@ local ToggleCorner = Instance.new("UICorner")
 ToggleCorner.CornerRadius = UDim.new(0, 8)
 ToggleCorner.Parent = ToggleButton
 
+--------------------------------------------------
 -- STATUS
+--------------------------------------------------
+
 local StatusText = Instance.new("TextLabel")
 StatusText.Name = "StatusText"
 StatusText.Size = UDim2.new(1, 0, 0, 25)
@@ -172,8 +176,10 @@ StatusText.Font = Enum.Font.GothamMedium
 StatusText.ZIndex = 15
 StatusText.Parent = MainFrame
 
+--------------------------------------------------
 -- V BUTTON
--- Position initiale : haut à gauche
+--------------------------------------------------
+
 local ShowButton = Instance.new("TextButton")
 ShowButton.Name = "ShowButton"
 ShowButton.Size = UDim2.new(0, 42, 0, 42)
@@ -185,10 +191,7 @@ ShowButton.Text = "V"
 ShowButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ShowButton.TextSize = 17
 ShowButton.Font = Enum.Font.GothamBold
-
--- Caché au lancement puisque le Hub est ouvert
 ShowButton.Visible = false
-
 ShowButton.Active = true
 ShowButton.AutoButtonColor = true
 ShowButton.ZIndex = 50
@@ -274,7 +277,6 @@ ShowButton.InputEnded:Connect(function(input)
 
         vDragging = false
 
-        -- Si le V n'a pas été déplacé, on ouvre le Hub
         if not vMoved then
             HubVisible = true
             MainFrame.Visible = true
@@ -313,8 +315,6 @@ end)
 local function HideHub()
     HubVisible = false
     MainFrame.Visible = false
-
-    -- Le V garde exactement sa dernière position
     ShowButton.Visible = true
 end
 
@@ -332,14 +332,50 @@ end)
 -- ADMIN CHECK
 --------------------------------------------------
 
+local function IsAdmin(player)
+    if not player then
+        return false
+    end
+
+    return Admins[player.Name] == true
+end
+
+local function CheckPlayer(player)
+    if not HubEnabled then
+        return
+    end
+
+    if IsAdmin(player) then
+        LocalPlayer:Kick("Admin detected! Disconnecting...")
+    end
+end
+
 local function CheckAdmins()
+    if not HubEnabled then
+        return
+    end
+
     for _, player in ipairs(Players:GetPlayers()) do
-        if Admins[player.Name] then
+        if IsAdmin(player) then
             LocalPlayer:Kick("Admin detected! Disconnecting...")
             return
         end
     end
 end
+
+--------------------------------------------------
+-- DETECTION DES NOUVEAUX JOUEURS
+--------------------------------------------------
+
+Players.PlayerAdded:Connect(function(player)
+    if not HubEnabled then
+        return
+    end
+
+    task.defer(function()
+        CheckPlayer(player)
+    end)
+end)
 
 --------------------------------------------------
 -- TOGGLE
@@ -357,17 +393,8 @@ local function ToggleHub()
         StatusText.Text = "Enabled"
         StatusText.TextColor3 = Color3.fromRGB(100, 255, 130)
 
+        -- Vérification immédiate des joueurs présents
         CheckAdmins()
-
-        if AdminConnection then
-            AdminConnection:Disconnect()
-        end
-
-        AdminConnection = RunService.Heartbeat:Connect(function()
-            if HubEnabled then
-                CheckAdmins()
-            end
-        end)
 
     else
 
@@ -378,10 +405,6 @@ local function ToggleHub()
         StatusText.Text = "Disabled"
         StatusText.TextColor3 = Color3.fromRGB(180, 180, 180)
 
-        if AdminConnection then
-            AdminConnection:Disconnect()
-            AdminConnection = nil
-        end
     end
 end
 
