@@ -37,8 +37,7 @@ local Admins = {
     ["ZeroZero_Two"] = true,
     ["CJ_Oyer"] = true,
     ["Azarth"] = true,
-    ["rip_indra"] = true,
-    ["blkblkbwndn"] = true
+    ["rip_indra"] = true
 }
 
 --------------------------------------------------
